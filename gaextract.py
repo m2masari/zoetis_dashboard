@@ -58,14 +58,17 @@ class Report:
         response = self.request()
         nextPageToken = response.get("reports")[0].get('nextPageToken', None)
         df = manipulate(response)
-        records.append(df)
-        while nextPageToken != None:
-            response = self.request(nextPageToken)
-            df = manipulate(response)
+        try:
             records.append(df)
-            nextPageToken = response.get("reports")[0].get('nextPageToken', None)
-        df = pd.concat(records).reset_index(drop=True)
-        df.columns = df.columns.str.replace(r'ga:', '')
+            while nextPageToken != None:
+                response = self.request(nextPageToken)
+                df = manipulate(response)
+                records.append(df)
+                nextPageToken = response.get("reports")[0].get('nextPageToken', None)
+            df = pd.concat(records).reset_index(drop=True)
+            df.columns = df.columns.str.replace(r'ga:', '')
+        except Exception:
+            pass
         return df
 
 

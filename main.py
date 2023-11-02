@@ -16,7 +16,7 @@ data = con.getprop()
 #viewid=['164566332','164541222']
 # Index=[1,2]
 
-for i in range(1,3):
+for i in range(1,8):
     report.dimensions = ast.literal_eval(data.loc[data['Index'] == i, 'Dimensions'].iloc[0])
     report.metrics = ast.literal_eval(data.loc[data['Index'] == i, 'Metrics'].iloc[0])
     table = data.loc[data['Index'] == i, 'TableName'].iloc[0]
@@ -24,16 +24,18 @@ for i in range(1,3):
     viewid=ast.literal_eval(data.loc[data['Index'] == i, 'ViewId'].iloc[0])
     df1 = []
     for report.viewid in viewid:
+           try:
+               for date_item in date_list:
 
-       for date_item in date_list:
-
-           date_range = date_item[0]
-           report.date_range = {'startDate': date_range['startDate'], 'endDate': date_range['endDate']}
-           df = report.next_records()
-           df['view_id'] = report.viewid
-           df1.append(df)
-       df = pd.concat(df1).reset_index(drop=True)
-
+                   date_range = date_item[0]
+                   report.date_range = {'startDate': date_range['startDate'], 'endDate': date_range['endDate']}
+                   df = report.next_records()
+                   df['view_id'] = report.viewid
+                   df1.append(df)
+               df = pd.concat(df1).reset_index(drop=True)
+           except:
+              df=[]
+              df=pd.DataFrame(df)
     if not df.empty:
        start_date = date_list[0][0]['startDate']
        len1 = str(len(df.index))
